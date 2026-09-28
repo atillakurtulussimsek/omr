@@ -1,0 +1,28 @@
+{
+  "id": "optik129",
+  "name": "Testofis OPTİK-129 (YKS)",
+  "width": 2000,
+  "height": 2840,
+  "bubbleRadius": 16,
+  "anchorSize": 33,
+  "anchors": [[1480, 160], [160, 160], [480, 280], [1480, 600], [480, 640], [920, 1440], [160, 1440], [960, 1560], [1920, 2680], [1000, 2680]],
+  "alignment": "anchors",
+  "timingMarks": [[80, 280], [80, 320], [80, 360], [80, 400], [80, 440], [80, 480], [80, 520], [80, 560], [80, 600], [80, 640], [80, 680], [80, 720], [80, 760], [80, 800], [80, 840], [80, 880], [80, 920], [80, 960], [80, 1000], [80, 1040], [80, 1080], [80, 1120], [80, 1160], [80, 1200], [80, 1240], [80, 1280], [80, 1320], [80, 1360], [80, 1400], [80, 1440], [80, 1480], [80, 1520], [80, 1560], [80, 1600], [80, 1640], [80, 1680], [80, 1720], [80, 1760], [80, 1800], [80, 1840], [80, 1880], [80, 1920], [80, 1960], [80, 2000], [80, 2040], [80, 2080], [80, 2120], [80, 2160], [80, 2200], [80, 2240], [80, 2280], [80, 2320], [80, 2360], [80, 2400], [80, 2440], [80, 2480], [80, 2520], [80, 2560], [80, 2600], [80, 2640], [80, 2680]],
+  "timingSize": [40, 17],
+  "fields": [
+    {"name": "ogrenciNo", "title": "Öğrenci No", "category": "info", "type": "columns", "x": 520, "y": 280, "stepX": 40, "stepY": 40, "rows": 10, "cols": 5, "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], "blank": "_"},
+    {"name": "adSoyad", "title": "Ad Soyad", "category": "info", "type": "columns", "x": 160, "y": 1560, "stepX": 40, "stepY": 40, "rows": 29, "cols": 20, "labels": ["A", "B", "C", "Ç", "D", "E", "F", "G", "Ğ", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "V", "Y", "Z"], "blank": " "},
+    {"name": "sinif", "title": "Sınıf", "category": "info", "type": "columns", "x": 800, "y": 280, "stepX": 40, "stepY": 80, "rows": 5, "cols": 1, "labels": ["9", "10", "11", "12", "MEZUN"], "blank": ""},
+    {"name": "sube", "title": "Şube", "category": "info", "type": "columns", "x": 840, "y": 280, "stepX": 40, "stepY": 40, "rows": 29, "cols": 1, "labels": ["A", "B", "C", "Ç", "D", "E", "F", "G", "Ğ", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "V", "Y", "Z"], "blank": ""},
+    {"name": "alan", "title": "Alan", "category": "info", "type": "columns", "x": 960, "y": 320, "stepX": 40, "stepY": 80, "rows": 4, "cols": 1, "labels": ["SÖZ", "SAY", "EA", "DİL"], "blank": ""},
+    {"name": "oturum", "title": "Oturum", "category": "info", "type": "columns", "x": 1440, "y": 640, "stepX": 40, "stepY": 40, "rows": 2, "cols": 1, "labels": ["TYT", "AYT"], "blank": ""},
+    {"name": "kitapcik", "title": "Kitapçık", "category": "info", "type": "rows", "x": 400, "y": 760, "stepX": 80, "stepY": 40, "rows": 1, "cols": 2, "labels": ["A", "B"], "blank": ""},
+    {"name": "okulKodu", "title": "Okul Kodu", "category": "info", "type": "columns", "x": 160, "y": 280, "stepX": 40, "stepY": 40, "rows": 10, "cols": 8, "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], "blank": "_"},
+    {"name": "tcTel", "title": "TC / Tel", "category": "info", "type": "columns", "x": 160, "y": 1040, "stepX": 40, "stepY": 40, "rows": 10, "cols": 11, "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], "blank": "_"},
+    {"name": "grupNo", "title": "Grup No", "category": "info", "type": "columns", "x": 640, "y": 1040, "stepX": 40, "stepY": 40, "rows": 10, "cols": 3, "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], "blank": "_"},
+    {"name": "turkce", "title": "TÜRKÇE", "category": "answers", "type": "rows", "x": 1040, "y": 880, "stepX": 40, "stepY": 40, "rows": 40, "cols": 5, "labels": ["A", "B", "C", "D", "E"], "blank": "-"},
+    {"name": "sosyal", "title": "SOSYAL", "category": "answers", "type": "rows", "x": 1280, "y": 880, "stepX": 40, "stepY": 40, "rows": 46, "cols": 5, "labels": ["A", "B", "C", "D", "E"], "blank": "-"},
+    {"name": "matematik", "title": "MATEMATİK", "category": "answers", "type": "rows", "x": 1520, "y": 880, "stepX": 40, "stepY": 40, "rows": 40, "cols": 5, "labels": ["A", "B", "C", "D", "E"], "blank": "-"},
+    {"name": "fen", "title": "FEN", "category": "answers", "type": "rows", "x": 1760, "y": 880, "stepX": 40, "stepY": 40, "rows": 40, "cols": 5, "labels": ["A", "B", "C", "D", "E"], "blank": "-"}
+  ]
+}

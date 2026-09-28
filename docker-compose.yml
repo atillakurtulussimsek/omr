@@ -1,0 +1,39 @@
+# Dokploy: "Compose" tipinde uygulama olarak ekleyin (kaynak: git deposu, bu dosya).
+# Domains bölümünde alan adını `frontend` servisine, 80 portuna bağlayın.
+# Şablonlar ve iş görselleri `appData` volume'unda kalır; paketle gelen şablonlar ilk açılışta kopyalanır.
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      JOB_DIR: /data/jobs
+      FORMS_DIR: /data/forms
+      JOB_TTL_HOURS: "24"
+      WORKER_COUNT: "2"
+      # Dokploy > Environment bölümünde tanımlayın; boş bırakılırsa uygulama şifresiz (açık) çalışır!
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD tanımlanmalı}
+    volumes:
+      - appData:/data
+    expose:
+      - "8000"
+    networks:
+      - internal
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    expose:
+      - "80"
+    networks:
+      - internal
+      - dokploy-network
+
+volumes:
+  appData:
+
+networks:
+  internal:
+  dokploy-network:
+    external: true

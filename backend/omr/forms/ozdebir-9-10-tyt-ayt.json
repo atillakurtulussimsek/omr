@@ -1,0 +1,738 @@
+{
+ "id": "ozdebir-9-10-tyt-ayt",
+ "name": "Özdebir 9-10 / TYT-AYT",
+ "width": 2000,
+ "height": 2829,
+ "bubbleRadius": 16.1,
+ "anchorSize": 24.8,
+ "anchors": [],
+ "fields": [
+  {
+   "name": "tip",
+   "title": "TİP",
+   "category": "info",
+   "type": "columns",
+   "x": 124.5,
+   "y": 259.5,
+   "stepX": 40.0,
+   "stepY": 40.0,
+   "rows": 1,
+   "cols": 1,
+   "labels": [
+    "1"
+   ],
+   "blank": " "
+  },
+  {
+   "name": "ogrenciNo",
+   "title": "OGRENCI NO",
+   "category": "info",
+   "type": "columns",
+   "x": 564.2,
+   "y": 298.8,
+   "stepX": 39.99,
+   "stepY": 40.27,
+   "rows": 10,
+   "cols": 5,
+   "labels": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ],
+   "blank": "_"
+  },
+  {
+   "name": "tc",
+   "title": "TC",
+   "category": "info",
+   "type": "columns",
+   "x": 162.5,
+   "y": 1021.5,
+   "stepX": 40.03,
+   "stepY": 39.95,
+   "rows": 10,
+   "cols": 11,
+   "labels": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ],
+   "blank": "_"
+  },
+  {
+   "name": "adisoyad",
+   "title": "ADISOYAD",
+   "category": "info",
+   "type": "columns",
+   "x": 162.0,
+   "y": 1542.2,
+   "stepX": 40.04,
+   "stepY": 39.96,
+   "rows": 30,
+   "cols": 19,
+   "labels": [
+    "A",
+    "B",
+    "C",
+    "Ç",
+    "D",
+    "E",
+    "F",
+    "G",
+    "Ğ",
+    "H",
+    "I",
+    "İ",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "Ö",
+    "P",
+    "R",
+    "S",
+    "Ş",
+    "T",
+    "U",
+    "Ü",
+    "V",
+    "Y",
+    "Z",
+    "."
+   ],
+   "blank": " "
+  },
+  {
+   "name": "sinif",
+   "title": "SINIF",
+   "category": "info",
+   "type": "columns",
+   "x": 803.8,
+   "y": 338.6,
+   "stepX": 40.0,
+   "stepY": 40.6,
+   "rows": 4,
+   "cols": 1,
+   "labels": [
+    "09",
+    "10",
+    "11",
+    "12"
+   ],
+   "blank": " "
+  },
+  {
+   "name": "sube",
+   "title": "SUBE",
+   "category": "info",
+   "type": "columns",
+   "x": 843.1,
+   "y": 340.1,
+   "stepX": 40.0,
+   "stepY": 40.06,
+   "rows": 27,
+   "cols": 1,
+   "labels": [
+    "A",
+    "B",
+    "C",
+    "Ç",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "İ",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "R",
+    "S",
+    "Ş",
+    "T",
+    "U",
+    "Ü",
+    "V",
+    "Y",
+    "Z"
+   ],
+   "blank": " "
+  },
+  {
+   "name": "alan",
+   "title": "ALAN",
+   "category": "info",
+   "type": "columns",
+   "x": 643.0,
+   "y": 1261.4,
+   "stepX": 40.0,
+   "stepY": 39.9,
+   "rows": 4,
+   "cols": 1,
+   "labels": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "blank": " "
+  },
+  {
+   "name": "kitapcik1",
+   "title": "KITAPCIK1",
+   "category": "info",
+   "type": "rows",
+   "x": 643.5,
+   "y": 1061.5,
+   "stepX": 79.0,
+   "stepY": 40.0,
+   "rows": 1,
+   "cols": 2,
+   "labels": [
+    "A",
+    "B"
+   ],
+   "blank": " "
+  },
+  {
+   "name": "tde",
+   "title": "TDE",
+   "category": "answers",
+   "type": "rows",
+   "x": 1042.5,
+   "y": 901.7,
+   "stepX": 39.92,
+   "stepY": 39.99,
+   "rows": 46,
+   "cols": 5,
+   "labels": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+   ],
+   "blank": "-"
+  },
+  {
+   "name": "sos",
+   "title": "SOS",
+   "category": "answers",
+   "type": "rows",
+   "x": 1282.0,
+   "y": 901.6,
+   "stepX": 40.03,
+   "stepY": 39.99,
+   "rows": 46,
+   "cols": 5,
+   "labels": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+   ],
+   "blank": "-"
+  },
+  {
+   "name": "mat",
+   "title": "MAT",
+   "category": "answers",
+   "type": "rows",
+   "x": 1522.3,
+   "y": 901.4,
+   "stepX": 40.1,
+   "stepY": 40.0,
+   "rows": 46,
+   "cols": 5,
+   "labels": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+   ],
+   "blank": "-"
+  },
+  {
+   "name": "fen",
+   "title": "FEN",
+   "category": "answers",
+   "type": "rows",
+   "x": 1762.8,
+   "y": 901.5,
+   "stepX": 39.96,
+   "stepY": 40.0,
+   "rows": 46,
+   "cols": 5,
+   "labels": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+   ],
+   "blank": "-"
+  },
+  {
+   "name": "ogrenciNo2",
+   "title": "OGRENCI NO",
+   "category": "info",
+   "type": "columns",
+   "x": 164.2,
+   "y": 298.8,
+   "stepX": 39.96,
+   "stepY": 40.23,
+   "rows": 10,
+   "cols": 8,
+   "labels": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ],
+   "blank": "_"
+  }
+ ],
+ "timingMarks": [
+  [
+   80.9,
+   258.9
+  ],
+  [
+   80.3,
+   299.0
+  ],
+  [
+   79.9,
+   339.9
+  ],
+  [
+   80.1,
+   380.0
+  ],
+  [
+   80.0,
+   420.0
+  ],
+  [
+   80.0,
+   460.1
+  ],
+  [
+   80.0,
+   501.0
+  ],
+  [
+   79.5,
+   541.0
+  ],
+  [
+   79.5,
+   581.0
+  ],
+  [
+   79.8,
+   621.3
+  ],
+  [
+   79.2,
+   661.5
+  ],
+  [
+   79.2,
+   701.5
+  ],
+  [
+   79.3,
+   741.4
+  ],
+  [
+   79.0,
+   781.5
+  ],
+  [
+   79.0,
+   821.5
+  ],
+  [
+   79.0,
+   861.5
+  ],
+  [
+   79.0,
+   902.0
+  ],
+  [
+   78.9,
+   942.1
+  ],
+  [
+   78.9,
+   982.0
+  ],
+  [
+   78.8,
+   1022.0
+  ],
+  [
+   78.5,
+   1062.0
+  ],
+  [
+   78.5,
+   1101.8
+  ],
+  [
+   78.5,
+   1141.9
+  ],
+  [
+   78.3,
+   1181.8
+  ],
+  [
+   78.3,
+   1221.5
+  ],
+  [
+   78.4,
+   1261.4
+  ],
+  [
+   77.8,
+   1301.9
+  ],
+  [
+   78.0,
+   1342.0
+  ],
+  [
+   78.2,
+   1382.1
+  ],
+  [
+   78.0,
+   1422.5
+  ],
+  [
+   78.0,
+   1462.5
+  ],
+  [
+   78.2,
+   1502.6
+  ],
+  [
+   78.0,
+   1542.5
+  ],
+  [
+   78.0,
+   1582.5
+  ],
+  [
+   78.0,
+   1622.0
+  ],
+  [
+   78.0,
+   1662.0
+  ],
+  [
+   77.9,
+   1702.0
+  ],
+  [
+   78.2,
+   1741.9
+  ],
+  [
+   78.0,
+   1782.0
+  ],
+  [
+   78.1,
+   1822.0
+  ],
+  [
+   77.9,
+   1862.1
+  ],
+  [
+   77.6,
+   1902.5
+  ],
+  [
+   77.5,
+   1942.5
+  ],
+  [
+   77.5,
+   1982.5
+  ],
+  [
+   77.8,
+   2022.5
+  ],
+  [
+   77.8,
+   2062.5
+  ],
+  [
+   77.5,
+   2102.5
+  ],
+  [
+   77.6,
+   2142.5
+  ],
+  [
+   77.2,
+   2182.5
+  ],
+  [
+   77.1,
+   2222.8
+  ],
+  [
+   77.1,
+   2263.4
+  ],
+  [
+   77.5,
+   2303.2
+  ],
+  [
+   77.6,
+   2343.1
+  ],
+  [
+   77.4,
+   2383.5
+  ],
+  [
+   77.2,
+   2422.1
+  ],
+  [
+   77.0,
+   2461.5
+  ],
+  [
+   77.0,
+   2501.5
+  ],
+  [
+   77.0,
+   2541.5
+  ],
+  [
+   77.1,
+   2581.4
+  ],
+  [
+   77.6,
+   2621.2
+  ],
+  [
+   77.0,
+   2660.6
+  ],
+  [
+   77.1,
+   2700.5
+  ]
+ ],
+ "timingSize": [
+  39.0,
+  13.0
+ ],
+ "alignment": "timing",
+ "export": {
+  "encoding": "windows-1254",
+  "items": [
+   {
+    "kind": "field",
+    "field": "tip",
+    "width": 1,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "field",
+    "field": "ogrenciNo",
+    "width": 5,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "field",
+    "field": "tc",
+    "width": 11,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "space",
+    "width": 10
+   },
+   {
+    "kind": "field",
+    "field": "adisoyad",
+    "width": 22,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "field",
+    "field": "sinif",
+    "width": 2,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "field",
+    "field": "sube",
+    "width": 1,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "field",
+    "field": "alan",
+    "width": 1,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "space",
+    "width": 1
+   },
+   {
+    "kind": "field",
+    "field": "kitapcik1",
+    "width": 1,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "field",
+    "field": "tde",
+    "width": 46,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "space",
+    "width": 4
+   },
+   {
+    "kind": "field",
+    "field": "sos",
+    "width": 46,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "space",
+    "width": 4
+   },
+   {
+    "kind": "field",
+    "field": "mat",
+    "width": 46,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "space",
+    "width": 4
+   },
+   {
+    "kind": "field",
+    "field": "fen",
+    "width": 46,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   },
+   {
+    "kind": "space",
+    "width": 4
+   },
+   {
+    "kind": "field",
+    "field": "ogrenciNo2",
+    "width": 8,
+    "align": "left",
+    "pad": " ",
+    "blankAs": " ",
+    "multiAs": "*",
+    "map": {}
+   }
+  ]
+ }
+}
