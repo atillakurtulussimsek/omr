@@ -10,8 +10,9 @@ services:
       FORMS_DIR: /data/forms
       JOB_TTL_HOURS: "24"
       WORKER_COUNT: "2"
-      # Dokploy > Environment bölümünde tanımlayın; boş bırakılırsa uygulama şifresiz (açık) çalışır!
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD tanımlanmalı}
+      # İsteğe bağlı. İnternete açık kurulumda Dokploy > Environment bölümünde tanımlayın;
+      # boş bırakılırsa uygulama şifresiz çalışır (yalnız yerel ağ için uygundur).
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
     volumes:
       - appData:/data
     expose:
