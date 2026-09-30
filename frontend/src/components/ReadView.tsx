@@ -132,10 +132,12 @@ export default function ReadView({ isActive: isViewActive }: ReadViewProps) {
           {selectedPage && isViewActive && (
             <PageDetail
               jobId={job.id}
+              formId={job.formId}
               page={selectedPage}
               pageCount={pages.length}
               onNavigate={setSelectedIndex}
               onClose={closeDetail}
+              onEdited={(edited) => setJob((j) => j && { ...j, pages: j.pages.map((p) => (p.index === edited.index ? edited : p)) })}
             />
           )}
         </section>

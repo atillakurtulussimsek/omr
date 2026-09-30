@@ -1,4 +1,4 @@
-import type { Detection, FmtImport, FormInfo, FormSpec, Job, TestResult } from './types'
+import type { Detection, FmtImport, FormInfo, FormSpec, Job, PageResult, TestResult } from './types'
 
 async function parse<T>(res: Response): Promise<T> {
   if (!res.ok) {
@@ -18,6 +18,9 @@ export function createJob(files: File[], formId: string): Promise<Job> {
   body.append('formId', formId)
   return fetch('/api/jobs', { method: 'POST', body }).then((r) => parse<Job>(r))
 }
+
+export const editPage = (jobId: string, index: number, edits: Record<string, Record<string, string>>) =>
+  fetch(`/api/jobs/${jobId}/pages/${index}`, json('PUT', edits)).then((r) => parse<PageResult>(r))
 
 export const exportTxtUrl = (jobId: string) => `/api/jobs/${jobId}/export.txt`
 export const annotatedZipUrl = (jobId: string) => `/api/jobs/${jobId}/annotated.zip`

@@ -4,9 +4,10 @@ import io
 import shutil
 import zipfile
 from pathlib import Path
-from typing import List
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from typing import Dict, List
+
+from fastapi import Body, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, Response, StreamingResponse
 
 from omr.export import exportTxt
@@ -61,6 +62,15 @@ def createJob(files: List[UploadFile] = File(...), formId: str = Form("optik129"
 @app.get("/api/jobs/{jobId}")
 def jobStatus(jobId: str) -> dict:
     return requireJob(jobId).toDict()
+
+
+@app.put("/api/jobs/{jobId}/pages/{index}")
+def editPage(jobId: str, index: int, edits: Dict[str, Dict[str, str]] = Body(...)) -> dict:
+    """Elle düzeltme: {alan: {grupIndeksi: değer}}."""
+    try:
+        return jobs.applyEdits(requireJob(jobId), index, edits)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
 
 
 @app.get("/api/jobs/{jobId}/export.txt")

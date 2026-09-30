@@ -1,4 +1,4 @@
-export type GroupStatus = 'empty' | 'filled' | 'multi' | 'suspect'
+export type GroupStatus = 'empty' | 'filled' | 'multi' | 'suspect' | 'manual'
 
 export interface GroupResult {
   value: string
@@ -28,6 +28,8 @@ export interface PageResult {
   fields: Record<string, FieldResult>
   flags: Flag[]
   hasAnnotated: boolean
+  edited?: boolean
+  manualEntry?: boolean
 }
 
 export interface Job {

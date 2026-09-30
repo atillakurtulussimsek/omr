@@ -41,11 +41,11 @@ export default function ResultsTable({ pages, selectedIndex, onSelect }: Results
                     return <td key={c.name} className={/^\d+$/.test(text) ? 'mono' : ''}>{text}</td>
                   })}
                   <td>
-                    {p.flags.length ? <span className="badge warn">{p.flags.length} uyarı</span> : <span className="badge ok">Tamam</span>}
+                    {p.flags.length ? <span className="badge warn">{p.flags.length} uyarı</span> : p.edited ? <span className="badge manual">Düzeltildi</span> : <span className="badge ok">Tamam</span>}
                   </td>
                 </>
               ) : (
-                <td colSpan={columns.length + 1}><span className="badge fail">{p.error}</span></td>
+                <td colSpan={columns.length + 1}><span className="badge fail">{p.error}</span> <span className="muted">· tıklayıp elle girin</span></td>
               )}
             </tr>
           ))}

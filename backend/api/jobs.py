@@ -106,3 +106,46 @@ def cleanupJobs() -> None:
         for p in JOB_DIR.iterdir():
             if p.name not in jobs and p.stat().st_mtime < limit:
                 shutil.rmtree(p, ignore_errors=True)
+
+
+MANUAL = "manual"
+
+
+def emptyFields(template: FormTemplate) -> dict:
+    """Okunamayan sayfa için tüm grupları boş olan alan sözlüğü (elle doldurulmak üzere)."""
+    return {
+        f.name: {"title": f.title, "category": f.category or "info", "value": f.blank * len(f.groups),
+                 "groups": [{"value": f.blank, "status": "empty", "fills": [0.0] * len(g.cells)} for g in f.groups]}
+        for f in template.fields
+    }
+
+
+def applyEdits(job: Job, index: int, edits: Dict[str, Dict[str, str]]) -> dict:
+    """edits: {alanAdı: {grupIndeksi(str): değer}}. Değer o grubun etiketlerinden biri ya da alanın boş
+    karakteri olmalı. Düzenlenen grup 'manual' olur, uyarısı kalkar; okunamayan sayfa elle girilmiş sayılır."""
+    with job.lock:
+        if not 0 <= index < len(job.pages):
+            raise ValueError("Sayfa bulunamadı")
+        page = job.pages[index]
+        if not page.get("ok"):
+            page.update(ok=True, error="", fields=emptyFields(job.template), flags=[], manualEntry=True)
+        fieldsByName = {f.name: f for f in job.template.fields}
+        for name, groups in edits.items():
+            spec = fieldsByName.get(name)
+            if spec is None or name not in page["fields"]:
+                raise ValueError(f"Alan bulunamadı: {name}")
+            result = page["fields"][name]
+            for key, value in groups.items():
+                gi = int(key)
+                if not 0 <= gi < len(spec.groups):
+                    raise ValueError(f"{spec.title}: geçersiz grup {gi + 1}")
+                labels = [c.label for c in spec.groups[gi].cells]
+                if value != spec.blank and value not in labels:
+                    raise ValueError(f"{spec.title} {gi + 1}: '{value}' geçerli bir seçenek değil")
+                result["groups"][gi].update(value=value, status=MANUAL)
+            value = "".join(g["value"] for g in result["groups"])
+            result["value"] = value if spec.category == "answers" else value.strip()
+            page["flags"] = [fl for fl in page["flags"]
+                             if not (fl["field"] == name and str(fl["group"]) in groups)]
+        page["edited"] = True
+        return dict(page)

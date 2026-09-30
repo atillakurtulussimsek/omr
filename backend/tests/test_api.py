@@ -33,6 +33,16 @@ def testJobFlow(tmp_path, monkeypatch):
     assert client.get(f"/api/jobs/{job['id']}/annotated.zip").content[:2] == b"PK"
     assert client.get(f"/api/jobs/{job['id']}/pages/5/annotated.jpg").status_code == 404
 
+    # elle düzeltme: cevap ve bilgi alanı; geçersiz değer reddedilir; TXT düzeltmeyi yansıtır
+    r = client.put(f"/api/jobs/{job['id']}/pages/0", json={"turkce": {"0": "E", "1": "-"}, "ogrenciNo": {"4": "9"}})
+    assert r.status_code == 200, r.text
+    page = r.json()
+    assert page["edited"] and page["fields"]["turkce"]["value"][:2] == "E-"
+    assert page["fields"]["turkce"]["groups"][0]["status"] == "manual"
+    assert page["fields"]["ogrenciNo"]["value"] == EXPECTED["ogrenciNo"][:4] + "9"
+    assert client.put(f"/api/jobs/{job['id']}/pages/0", json={"turkce": {"0": "Z"}}).status_code == 400
+    assert client.get(f"/api/jobs/{job['id']}/export.txt").text.startswith(EXPECTED["ogrenciNo"][:4] + "9")
+
 
 def testRejectsUnsupported():
     r = TestClient(app).post("/api/jobs", files=[("files", ("a.exe", b"x", "application/octet-stream"))])
