@@ -351,6 +351,10 @@ body.modalOpen { overflow: hidden; }
 .editorActions, .fieldActions, .sources { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
 .editorActions .primary { padding: 8px 22px; }
 .fmtWarnings { margin-top: 10px; font-size: 12.5px; }
+.exportLinks { display: flex; gap: 12px; }
+.exportLinks a { color: var(--accentInk); text-decoration: none; font-weight: 500; }
+.exportLinks a:hover { text-decoration: underline; }
+.importRow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
 .hint { margin: 0 0 8px; font-size: 12.5px; }
 
 .tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: var(--radiusSm); padding: 4px; }

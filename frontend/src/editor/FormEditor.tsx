@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { deleteForm, getDetection, getForm, importFmt, referenceUrl, saveForm, testForm, uploadReference } from '../api'
+import { deleteForm, deleteReference, exportFormUrl, getDetection, getForm, importFmt, referenceUrl, saveForm, testForm, uploadReference } from '../api'
 import type { Detection, ExportSpec, FieldSpec, FormSpec, TestResult } from '../types'
 import EditorCanvas from './EditorCanvas'
 import ExportEditor from './ExportEditor'
@@ -193,6 +193,16 @@ export default function FormEditor({ formId }: FormEditorProps) {
     })
   })
 
+  const removeReference = () => {
+    if (!confirm('Referans görsel kaldırılsın mı? Okuma etkilenmez; deneme okuması ve TXT önizlemesi için yeniden görsel yüklemeniz gerekir.')) return
+    run(async () => {
+      await deleteReference(spec.id)
+      setSpec((s) => (s ? { ...s, hasReference: false } : s))
+      setTestResult(null)
+      setMessage({ kind: 'ok', text: 'Referans görsel kaldırıldı' })
+    })
+  }
+
   const remove = () => {
     if (!confirm(`"${spec.name}" formu silinsin mi? Bu işlem geri alınamaz.`)) return
     run(async () => {
@@ -245,10 +255,21 @@ export default function FormEditor({ formId }: FormEditorProps) {
           <span className="muted">{spec.hasReference ? `${detection?.circles.length ?? 0} baloncuk algılandı` : 'referans görsel yok'}</span>
           <input ref={fmtRef} type="file" hidden accept=".fmt,.FMT"
             onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) applyFmt(f) }} />
-          <button onClick={() => fmtRef.current?.click()} disabled={isBusy || !spec.hasReference}
+          <button onClick={() => fmtRef.current?.click()} disabled={isBusy || !(detection?.circles.length)}
             title="Sekonic .FMT dosyasından alanları ve TXT düzenini al">
             FMT'den içe aktar
           </button>
+          {spec.hasReference && (
+            <button className="danger" onClick={removeReference} disabled={isBusy} title="Demo / örnek görseli sunucudan sil">
+              Referans görseli kaldır
+            </button>
+          )}
+        </div>
+        <div className="sources exportRow">
+          <a className={`button ${isDirty ? 'disabled' : ''}`} href={exportFormUrl(spec.id)} title={isDirty ? 'Önce kaydedin' : 'Form tanımını indir (.json)'}>Dışa aktar</a>
+          {spec.hasReference && (
+            <a className={`button ${isDirty ? 'disabled' : ''}`} href={exportFormUrl(spec.id, true)} title="Tanım + referans görsel (.zip)">Görselle dışa aktar</a>
+          )}
         </div>
         {fmtWarnings.length > 0 && (
           <ul className="flagList fmtWarnings">{fmtWarnings.map((w, i) => <li key={i}>{w}</li>)}</ul>

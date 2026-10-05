@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { createForm, getForms } from '../api'
+import { useEffect, useRef, useState } from 'react'
+
+import { createForm, exportFormUrl, getForms, importForm } from '../api'
 import type { FormInfo } from '../types'
 import FormEditor from './FormEditor'
 
@@ -12,6 +13,17 @@ export default function FormsView() {
   const [file, setFile] = useState<File | null>(null)
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState('')
+  const importRef = useRef<HTMLInputElement>(null)
+
+  async function importFile(picked: File) {
+    setError('')
+    try {
+      const spec = await importForm(picked)
+      location.hash = `#forms/${spec.id}`
+    } catch (e) {
+      setError((e as Error).message)
+    }
+  }
 
   useEffect(() => {
     const onHashChange = () => setFormId(formIdFromHash())
@@ -53,7 +65,7 @@ export default function FormsView() {
         <h2>Tanımlı formlar</h2>
         <table>
           <thead>
-            <tr><th>Form</th><th>Alan</th><th>Hizalama</th><th>Referans görsel</th></tr>
+            <tr><th>Form</th><th>Alan</th><th>Hizalama</th><th>Referans görsel</th><th>Dışa aktar</th></tr>
           </thead>
           <tbody>
             {forms.map((f) => (
@@ -66,10 +78,20 @@ export default function FormsView() {
                     : (f.anchorCount < 4 ? <span className="badge fail">{f.anchorCount} kare · en az 4 gerekli</span> : `${f.anchorCount} kare`)}
                 </td>
                 <td>{f.hasReference ? 'Var' : <span className="muted">Yok</span>}</td>
+                <td className="exportLinks" onClick={(e) => e.stopPropagation()}>
+                  <a href={exportFormUrl(f.id)} title="Yalnız form tanımı">Tanım</a>
+                  {f.hasReference && <a href={exportFormUrl(f.id, true)} title="Tanım + referans görsel">Görselle</a>}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className="importRow">
+          <input ref={importRef} type="file" hidden accept=".json,.zip"
+            onChange={(e) => { const picked = e.target.files?.[0]; e.target.value = ''; if (picked) importFile(picked) }} />
+          <button onClick={() => importRef.current?.click()}>Form içe aktar</button>
+          <span className="muted">Dışa aktarılmış form dosyası (.json veya .zip); yeni bir form olarak eklenir.</span>
+        </div>
       </section>
 
       <section className="card">

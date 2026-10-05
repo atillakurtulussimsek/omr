@@ -57,3 +57,31 @@ def testReferenceForExistingTemplate():
     assert client.get("/api/forms/optik129").json()["hasReference"]
     result = client.post("/api/forms/optik129/test", json=client.get("/api/forms/optik129").json()).json()
     assert result["fields"]["adSoyad"]["value"] == EXPECTED["adSoyad"]
+
+
+def testExportImportAndRemoveReference():
+    upload("/api/forms/optik129/reference")
+    plain = client.get("/api/forms/optik129/export")
+    assert plain.status_code == 200 and plain.json()["id"] == "optik129"
+    packed = client.get("/api/forms/optik129/export?withReference=true")
+    assert packed.content[:2] == b"PK"
+
+    r = client.post("/api/forms/import", files={"file": ("x.json", plain.content, "application/json")})
+    assert r.status_code == 200, r.text
+    copy = r.json()
+    assert copy["id"] != "optik129" and len(copy["fields"]) == 14 and not copy["hasReference"]
+
+    r = client.post("/api/forms/import", files={"file": ("x.zip", packed.content, "application/zip")})
+    withRef = r.json()
+    assert withRef["hasReference"] and withRef["id"] not in ("optik129", copy["id"])
+    assert len(client.get(f"/api/forms/{withRef['id']}/detection").json()["circles"]) > 1000
+
+    assert client.delete(f"/api/forms/{withRef['id']}/reference").json() == {"hasReference": False}
+    assert not client.get(f"/api/forms/{withRef['id']}").json()["hasReference"]
+    assert client.get(f"/api/forms/{withRef['id']}/reference.jpg").status_code == 404
+    assert len(client.get(f"/api/forms/{withRef['id']}/detection").json()["circles"]) > 1000   # editör için kalır
+
+    assert client.post("/api/forms/import", files={"file": ("x.json", b"{}", "application/json")}).status_code == 400
+    assert client.post("/api/forms/import", files={"file": ("x.json", b"bozuk", "application/json")}).status_code == 400
+    for formId in (copy["id"], withRef["id"]):
+        client.delete(f"/api/forms/{formId}")

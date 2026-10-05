@@ -1,15 +1,17 @@
 """Form tanımlama uçları: şablon listesi, oluşturma (referans görselden), kaydetme, deneme okuması."""
 from __future__ import annotations
 
+import io
 import json
 import tempfile
+import zipfile
 from pathlib import Path
 from typing import List
 
 import cv2
 import numpy as np
 from fastapi import APIRouter, Body, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 from omr import reference, store
 from omr.align import AlignmentError
@@ -162,3 +164,73 @@ def importFmtFile(formId: str, file: UploadFile = File(...)) -> dict:
         return importFmt(file.file.read(), detection)
     except FmtError as e:
         raise HTTPException(400, str(e))
+
+
+EXPORT_KEYS = ("template.json", "reference.jpg", "detection.json")
+
+
+@router.get("/{formId}/export")
+def exportForm(formId: str, withReference: bool = False):
+    """Form tanımını indirir: yalnız tanım (JSON) ya da referans görsel + algılama ile birlikte (ZIP)."""
+    spec = loadSpecOr404(formId)
+    name = f"{formId}.omrform"
+    if not withReference:
+        return Response(json.dumps(spec, ensure_ascii=False, indent=1).encode("utf-8"),
+                        media_type="application/json",
+                        headers={"Content-Disposition": f'attachment; filename="{name}.json"'})
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("template.json", json.dumps(spec, ensure_ascii=False, indent=1))
+        for path in (store.referencePath(formId), store.detectionPath(formId)):
+            if path.is_file():
+                z.write(path, path.name)
+    return Response(buf.getvalue(), media_type="application/zip",
+                    headers={"Content-Disposition": f'attachment; filename="{name}.zip"'})
+
+
+@router.post("/import")
+def importForm(file: UploadFile = File(...)) -> dict:
+    """Dışa aktarılmış form tanımını (JSON veya ZIP) yeni bir form olarak ekler; var olanın üzerine yazmaz."""
+    data = file.file.read()
+    extras = {}
+    try:
+        if data[:2] == b"PK":
+            with zipfile.ZipFile(io.BytesIO(data)) as z:
+                names = set(z.namelist())
+                if "template.json" not in names:
+                    raise ValueError("ZIP içinde template.json yok")
+                spec = json.loads(z.read("template.json").decode("utf-8"))
+                extras = {n: z.read(n) for n in ("reference.jpg", "detection.json") if n in names}
+        else:
+            spec = json.loads(data.decode("utf-8"))
+        if not isinstance(spec, dict) or "fields" not in spec:
+            raise ValueError("Dosya bir form tanımı değil")
+        spec = {k: v for k, v in spec.items() if k not in ("hasReference", "rectified")}
+        spec["id"] = store.newFormId(str(spec.get("name", "")))
+        store.saveSpec(spec)
+    except store.TemplateError as e:
+        raise HTTPException(400, f"Form tanımı geçersiz: {e}")
+    except (ValueError, KeyError, UnicodeDecodeError, zipfile.BadZipFile) as e:
+        raise HTTPException(400, f"Dosya okunamadı: {e}")
+    if "reference.jpg" in extras:
+        if cv2.imdecode(np.frombuffer(extras["reference.jpg"], np.uint8), cv2.IMREAD_COLOR) is None:
+            extras.pop("reference.jpg")
+        else:
+            store.referencePath(spec["id"]).write_bytes(extras["reference.jpg"])
+    if "detection.json" in extras:
+        try:
+            json.loads(extras["detection.json"].decode("utf-8"))
+            store.detectionPath(spec["id"]).write_bytes(extras["detection.json"])
+        except ValueError:
+            pass
+    return withMeta(spec)
+
+
+@router.delete("/{formId}/reference")
+def deleteReference(formId: str) -> dict:
+    """Referans (demo) görseli kaldırır. Okuma bundan etkilenmez; baloncuk algılaması editör için kalır,
+    yalnız deneme okuması ve TXT önizlemesi görsel gerektirir."""
+    loadSpecOr404(formId)
+    if store.referencePath(formId).is_file():
+        store.referencePath(formId).unlink()
+    return {"hasReference": False}

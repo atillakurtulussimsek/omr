@@ -53,6 +53,12 @@ export const uploadReference = (formId: string, file: File) =>
   fetch(`/api/forms/${formId}/reference`, { method: 'POST', body: fileBody(file) }).then((r) => parse<Detection>(r))
 export const importFmt = (formId: string, file: File) =>
   fetch(`/api/forms/${formId}/fmt`, { method: 'POST', body: fileBody(file) }).then((r) => parse<FmtImport>(r))
+export const importForm = (file: File) =>
+  fetch('/api/forms/import', { method: 'POST', body: fileBody(file) }).then((r) => parse<FormSpec>(r))
+export const deleteReference = (formId: string) =>
+  fetch(`/api/forms/${formId}/reference`, { method: 'DELETE' }).then((r) => parse<{ hasReference: boolean }>(r))
+export const exportFormUrl = (formId: string, withReference = false) =>
+  `/api/forms/${formId}/export${withReference ? '?withReference=true' : ''}`
 export const testForm = (spec: FormSpec) =>
   fetch(`/api/forms/${spec.id}/test`, json('POST', spec)).then((r) => parse<TestResult>(r))
 export const referenceUrl = (formId: string, version: number) => `/api/forms/${formId}/reference.jpg?v=${version}`
