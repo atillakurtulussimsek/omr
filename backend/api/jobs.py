@@ -30,6 +30,7 @@ class Job:
         self.dir = JOB_DIR / self.id
         self.createdAt = time.time()
         self.status = "queued"   # queued | running | done | error
+        self.manual = False      # tarama yok, sayfalar elle kodlanıyor
         self.error = ""
         self.total = 0
         self.pages: List[dict] = []
@@ -40,7 +41,7 @@ class Job:
 
     def toDict(self) -> dict:
         with self.lock:
-            return {"id": self.id, "formId": self.template.id, "status": self.status,
+            return {"id": self.id, "formId": self.template.id, "status": self.status, "manual": self.manual,
                     "error": self.error, "total": self.total, "processed": len(self.pages),
                     "pages": list(self.pages)}
 
@@ -149,3 +150,33 @@ def applyEdits(job: Job, index: int, edits: Dict[str, Dict[str, str]]) -> dict:
                              if not (fl["field"] == name and str(fl["group"]) in groups)]
         page["edited"] = True
         return dict(page)
+
+
+def createManualJob(template: FormTemplate) -> Job:
+    """Tarama olmadan elle kodlama: boş iş, sayfalar tek tek eklenir."""
+    cleanupJobs()
+    job = Job(template, [])
+    job.dir.mkdir(parents=True, exist_ok=True)
+    (job.dir / "annotated").mkdir(exist_ok=True)
+    job.status = "done"
+    job.manual = True
+    jobs[job.id] = job
+    return job
+
+
+def addManualPage(job: Job) -> dict:
+    with job.lock:
+        index = len(job.pages)
+        page = {"ok": True, "error": "", "fields": emptyFields(job.template), "flags": [],
+                "alignment": {}, "index": index, "source": {"file": "Elle kodlama", "page": index + 1},
+                "hasAnnotated": False, "manualEntry": True, "edited": False}
+        job.pages.append(page)
+        job.total = len(job.pages)
+        return dict(page)
+
+
+def removeLastPage(job: Job) -> None:
+    with job.lock:
+        if job.pages:
+            job.pages.pop()
+            job.total = len(job.pages)

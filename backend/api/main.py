@@ -59,6 +59,33 @@ def createJob(files: List[UploadFile] = File(...), formId: str = Form("optik129"
     return jobs.submitJob(template, uploadDir, saved).toDict()
 
 
+@app.post("/api/jobs/manual")
+def createManualJob(formId: str = Form("optik129")) -> dict:
+    """Taramasız elle kodlama işi; TXT çıktısı seçilen formun düzenine göre üretilir."""
+    try:
+        template = loadTemplate(formId)
+    except FileNotFoundError as e:
+        raise HTTPException(400, str(e))
+    return jobs.createManualJob(template).toDict()
+
+
+@app.post("/api/jobs/{jobId}/pages")
+def addPage(jobId: str) -> dict:
+    job = requireJob(jobId)
+    if not job.manual:
+        raise HTTPException(400, "Yalnız elle kodlama işine sayfa eklenebilir")
+    return jobs.addManualPage(job)
+
+
+@app.delete("/api/jobs/{jobId}/pages/last")
+def removeLastPage(jobId: str) -> dict:
+    job = requireJob(jobId)
+    if not job.manual:
+        raise HTTPException(400, "Yalnız elle kodlama işinden sayfa silinebilir")
+    jobs.removeLastPage(job)
+    return job.toDict()
+
+
 @app.get("/api/jobs/{jobId}")
 def jobStatus(jobId: str) -> dict:
     return requireJob(jobId).toDict()

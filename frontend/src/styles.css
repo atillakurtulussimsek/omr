@@ -316,6 +316,9 @@ body.modalOpen { overflow: hidden; }
 .pickRow { margin: 2px 0 0; }
 .infoEdit { grid-column: 1 / -1; }
 .manualTag { margin-left: 6px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--accentInk); }
+.quickAnswers { margin: 4px 0 8px 100px; width: calc(100% - 100px); font-size: 13px; letter-spacing: .12em; }
+.manualBar { gap: 10px; }
+.manualBar button.small { padding: 4px 10px; font-size: 13px; }
 .legend { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; margin: 8px 0 0; }
 .legend .answerCell { width: 18px; height: 18px; line-height: 16px; font-size: 10px; margin: 0 2px 0 4px; }
 .button.small, button.primary.small { padding: 6px 16px; }

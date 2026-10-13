@@ -47,3 +47,20 @@ def testJobFlow(tmp_path, monkeypatch):
 def testRejectsUnsupported():
     r = TestClient(app).post("/api/jobs", files=[("files", ("a.exe", b"x", "application/octet-stream"))])
     assert r.status_code == 400
+
+
+def testManualJob(tmp_path, monkeypatch):
+    monkeypatch.setattr("api.jobs.JOB_DIR", tmp_path)
+    client = TestClient(app)
+    job = client.post("/api/jobs/manual", data={"formId": "optik129"}).json()
+    assert job["manual"] and job["status"] == "done" and job["pages"] == []
+    page = client.post(f"/api/jobs/{job['id']}/pages").json()
+    assert page["index"] == 0 and page["manualEntry"] and page["fields"]["turkce"]["value"] == "-" * 40
+    client.put(f"/api/jobs/{job['id']}/pages/0", json={"ogrenciNo": {"0": "1", "1": "2"}, "turkce": {"0": "A", "1": "B"}})
+    client.post(f"/api/jobs/{job['id']}/pages")
+    assert client.get(f"/api/jobs/{job['id']}").json()["total"] == 2
+    assert client.get(f"/api/jobs/{job['id']}/export.txt").text.count("\r\n") == 1   # boş sayfa çıktıya girmez
+    client.delete(f"/api/jobs/{job['id']}/pages/last")
+    txt = client.get(f"/api/jobs/{job['id']}/export.txt").text
+    assert txt.count("\r\n") == 1 and txt.startswith("12  ") and "AB" in txt
+    assert client.post("/api/jobs/x/pages").status_code == 404

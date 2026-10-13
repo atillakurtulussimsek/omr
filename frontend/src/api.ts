@@ -19,6 +19,15 @@ export function createJob(files: File[], formId: string): Promise<Job> {
   return fetch('/api/jobs', { method: 'POST', body }).then((r) => parse<Job>(r))
 }
 
+export function createManualJob(formId: string): Promise<Job> {
+  const body = new FormData()
+  body.append('formId', formId)
+  return fetch('/api/jobs/manual', { method: 'POST', body }).then((r) => parse<Job>(r))
+}
+export const addManualPage = (jobId: string) =>
+  fetch(`/api/jobs/${jobId}/pages`, { method: 'POST' }).then((r) => parse<PageResult>(r))
+export const removeLastPage = (jobId: string) =>
+  fetch(`/api/jobs/${jobId}/pages/last`, { method: 'DELETE' }).then((r) => parse<Job>(r))
 export const editPage = (jobId: string, index: number, edits: Record<string, Record<string, string>>) =>
   fetch(`/api/jobs/${jobId}/pages/${index}`, json('PUT', edits)).then((r) => parse<PageResult>(r))
 

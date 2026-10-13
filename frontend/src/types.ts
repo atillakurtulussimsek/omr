@@ -36,6 +36,7 @@ export interface Job {
   id: string
   formId: string
   status: 'queued' | 'running' | 'done' | 'error'
+  manual?: boolean
   error: string
   total: number
   processed: number

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { annotatedZipUrl, createJob, exportTxtUrl, getForms, getJob } from '../api'
+import { addManualPage, annotatedZipUrl, createJob, createManualJob, exportTxtUrl, getForms, getJob, removeLastPage } from '../api'
 import type { FormInfo, Job } from '../types'
 import UploadZone from './UploadZone'
 import ResultsTable from './ResultsTable'
@@ -67,6 +67,35 @@ export default function ReadView({ isActive: isViewActive }: ReadViewProps) {
   }
 
   const closeDetail = useCallback(() => setSelectedIndex(null), [])
+  async function startManual() {
+    setError('')
+    setUploading(true)
+    try {
+      const created = await createManualJob(formId)
+      const first = await addManualPage(created.id)
+      history.replaceState(null, '', `#job=${created.id}`)
+      setJob({ ...created, pages: [first], total: 1 })
+      setSelectedIndex(0)
+    } catch (e) {
+      setError((e as Error).message)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  async function addPage() {
+    if (!job) return
+    const page = await addManualPage(job.id)
+    setJob((j) => j && { ...j, pages: [...j.pages, page], total: j.pages.length + 1 })
+    setSelectedIndex(page.index)
+  }
+
+  async function removeLast() {
+    if (!job || !confirm('Son form silinsin mi?')) return
+    setJob(await removeLastPage(job.id))
+    setSelectedIndex(null)
+  }
+
   const pages = job?.pages ?? []
   const okCount = pages.filter((p) => p.ok).length
   const flaggedCount = pages.filter((p) => p.ok && p.flags.length > 0).length
@@ -96,12 +125,23 @@ export default function ReadView({ isActive: isViewActive }: ReadViewProps) {
         <button className="primary" onClick={startJob} disabled={files.length === 0 || uploading || isActive}>
           {uploading ? 'Yükleniyor…' : 'Oku'}
         </button>
+        <button onClick={startManual} disabled={uploading || isActive} title="Taramasız: seçili formun alanlarını klavyeden kodlayın, TXT çıktısı o formun düzeninde üretilir">
+          Elle kodla
+        </button>
         {error && <span className="errorText">{error}</span>}
       </div>
 
       {job && (
         <section className="results">
           <div className="resultsBar">
+            {job.manual ? (
+              <div className="progress manualBar">
+                <span className="badge manual">Elle kodlama</span>
+                <span>{pages.length} form</span>
+                <button className="small" onClick={addPage}>+ Form ekle</button>
+                <button className="small danger" onClick={removeLast} disabled={pages.length === 0}>Son formu sil</button>
+              </div>
+            ) : (
             <div className="progress">
               <div className="progressTrack">
                 <div
@@ -113,6 +153,7 @@ export default function ReadView({ isActive: isViewActive }: ReadViewProps) {
                 {job.status === 'error' ? `Hata: ${job.error}` : `${job.processed} / ${job.total || '…'} sayfa`}
               </span>
             </div>
+            )}
             <div className="stats">
               <span className="stat ok">{okCount} okundu</span>
               <span className="stat warn">{flaggedCount} uyarılı</span>
@@ -138,6 +179,7 @@ export default function ReadView({ isActive: isViewActive }: ReadViewProps) {
               onNavigate={setSelectedIndex}
               onClose={closeDetail}
               onEdited={(edited) => setJob((j) => j && { ...j, pages: j.pages.map((p) => (p.index === edited.index ? edited : p)) })}
+              onAddPage={job.manual ? addPage : undefined}
             />
           )}
         </section>

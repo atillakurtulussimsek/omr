@@ -65,5 +65,7 @@ def formatLine(fields: dict, template: FormTemplate) -> str:
 
 def exportTxt(pages: Iterable[dict], template: FormTemplate) -> bytes:
     """pages: PageResult.toDict() çıktıları; okunamayan sayfalar atlanır."""
-    text = "".join(formatLine(p["fields"], template) + LINE_END for p in pages if p.get("ok"))
+    # okunamayan sayfalar ve henüz doldurulmamış elle kodlama sayfaları atlanır
+    text = "".join(formatLine(p["fields"], template) + LINE_END for p in pages
+                   if p.get("ok") and not (p.get("manualEntry") and not p.get("edited")))
     return text.encode(exportOf(template).get("encoding", "utf-8"), errors="replace")

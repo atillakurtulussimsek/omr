@@ -10,6 +10,7 @@ interface PageDetailProps {
   onNavigate: (index: number) => void
   onClose: () => void
   onEdited: (page: PageResult) => void
+  onAddPage?: () => Promise<void>
 }
 
 type Edits = Record<string, Record<string, string>>
@@ -141,7 +142,7 @@ function InfoField({ field, spec, isEditing, pending, onChange }: InfoFieldProps
   )
 }
 
-export default function PageDetail({ jobId, formId, page, pageCount, onNavigate, onClose, onEdited }: PageDetailProps) {
+export default function PageDetail({ jobId, formId, page, pageCount, onNavigate, onClose, onEdited, onAddPage }: PageDetailProps) {
   const [specs, setSpecs] = useState<Record<string, FieldSpec>>({})
   const [isEditing, setIsEditing] = useState(false)
   const [edits, setEdits] = useState<Edits>({})
@@ -152,7 +153,8 @@ export default function PageDetail({ jobId, formId, page, pageCount, onNavigate,
     getForm(formId).then((s) => setSpecs(Object.fromEntries(s.fields.map((f) => [f.name, f])))).catch(() => setSpecs({}))
   }, [formId])
 
-  useEffect(() => { setIsEditing(false); setEdits({}); setError('') }, [page.index])
+  // elle kodlama sayfası henüz doldurulmamışsa doğrudan düzenleme modunda açılır
+  useEffect(() => { setIsEditing(Boolean(page.manualEntry && !page.edited)); setEdits({}); setError('') }, [page.index, page.manualEntry, page.edited])
 
   const fields = Object.values(page.fields)
   const info = fields.filter((f) => f.category !== 'answers')
@@ -192,14 +194,26 @@ export default function PageDetail({ jobId, formId, page, pageCount, onNavigate,
     } catch (e) { setError((e as Error).message) } finally { setIsSaving(false) }
   }
 
-  async function save() {
+  async function save(thenAdd = false) {
     setIsSaving(true)
     setError('')
     try {
-      onEdited(await editPage(jobId, page.index, edits))
+      if (editCount > 0) onEdited(await editPage(jobId, page.index, edits))
       setIsEditing(false)
       setEdits({})
+      if (thenAdd && onAddPage) await onAddPage()
     } catch (e) { setError((e as Error).message) } finally { setIsSaving(false) }
+  }
+
+  /** Cevap satırı için hızlı giriş: "ABCD-A.." yazınca sırayla doldurur ('-' ve boşluk = boş). */
+  function quickAnswers(name: string, spec: FieldSpec, field: FieldResult, text: string) {
+    const chars = Array.from(text.toLocaleUpperCase('tr'))
+    const next: Record<string, string> = { ...(edits[name] ?? {}) }
+    chars.slice(0, field.groups.length).forEach((ch, i) => {
+      const v = ch === '-' || ch === ' ' || ch === '.' ? spec.blank : spec.labels.includes(ch) ? ch : null
+      if (v !== null) next[i] = v
+    })
+    setEdits((e) => ({ ...e, [name]: next }))
   }
 
   return (
@@ -219,7 +233,12 @@ export default function PageDetail({ jobId, formId, page, pageCount, onNavigate,
               <>
                 <span className="muted">{editCount ? `${editCount} değişiklik` : 'Değiştirmek için hücreye tıklayın'}</span>
                 <button onClick={cancelEdit} disabled={isSaving}>Vazgeç</button>
-                <button className="primary small" onClick={save} disabled={isSaving || editCount === 0}>{isSaving ? 'Kaydediliyor…' : 'Kaydet'}</button>
+                <button className="primary small" onClick={() => save()} disabled={isSaving || editCount === 0}>{isSaving ? 'Kaydediliyor…' : 'Kaydet'}</button>
+                {onAddPage && (
+                  <button className="primary small" onClick={() => save(true)} disabled={isSaving} title="Kaydet ve sonraki formu kodla">
+                    Kaydet + yeni form
+                  </button>
+                )}
               </>
             ) : (
               <>
@@ -259,7 +278,20 @@ export default function PageDetail({ jobId, formId, page, pageCount, onNavigate,
                 <div className="answers">
                   {answers.map((f) => {
                     const name = nameOf(f)
-                    return <AnswerRow key={name} field={f} spec={specs[name]} isEditing={isEditing} pending={edits[name] ?? {}} onChange={(gi, v) => setEdit(name, gi, v)} />
+                    const spec = specs[name]
+                    const current = f.groups.map((g, i) => edits[name]?.[i] ?? g.value).join('')
+                    return (
+                      <div key={name}>
+                        <AnswerRow field={f} spec={spec} isEditing={isEditing} pending={edits[name] ?? {}} onChange={(gi, v) => setEdit(name, gi, v)} />
+                        {isEditing && spec && (
+                          <input
+                            type="text" className="quickAnswers mono" placeholder={`${f.title}: hızlı giriş, örn. ABCD-A… ('-' boş)`}
+                            value={current.replace(new RegExp(spec.blank === '-' ? '-' : ' ', 'g'), '-').replace(/-+$/, '')}
+                            onChange={(e) => quickAnswers(name, spec, f, e.target.value)}
+                          />
+                        )}
+                      </div>
+                    )
                   })}
                 </div>
                 <p className="muted legend">
